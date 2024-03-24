@@ -52,64 +52,78 @@ public class MainActivity extends AppCompatActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstNumber = Double.parseDouble(currentInput);
-                operation = "+";
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    firstNumber = Double.parseDouble(currentInput);
+                    operation = "+";
+                    currentInput = "";
+                }
             }
         });
 
         minusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstNumber = Double.parseDouble(currentInput);
-                operation = "-";
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    firstNumber = Double.parseDouble(currentInput);
+                    operation = "-";
+                    currentInput = "";
+                }
             }
         });
 
         multiplyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstNumber = Double.parseDouble(currentInput);
-                operation = "*";
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    firstNumber = Double.parseDouble(currentInput);
+                    operation = "*";
+                    currentInput = "";
+                }
             }
         });
 
         divideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstNumber = Double.parseDouble(currentInput);
-                operation = "/";
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    firstNumber = Double.parseDouble(currentInput);
+                    operation = "/";
+                    currentInput = "";
+                }
             }
         });
 
         percentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double num = Double.parseDouble(currentInput);
-                double result = calculator.percent(num);
-                display.setText(String.valueOf(result));
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    double num = Double.parseDouble(currentInput);
+                    double result = calculator.percent(num);
+                    display.setText(String.valueOf(result));
+                    currentInput = "";
+                }
             }
         });
 
         plusMinusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double num = Double.parseDouble(currentInput);
-                double result = calculator.changeSign(num);
-                display.setText(String.valueOf(result));
-                currentInput = "";
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    double num = Double.parseDouble(currentInput);
+                    double result = calculator.changeSign(num);
+                    display.setText(String.valueOf(result));
+                    currentInput = "";
+                }
             }
         });
 
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentInput = "";
-                display.setText("0");
+                if (!currentInput.isEmpty()) {
+                    currentInput = currentInput.substring(0, currentInput.length() - 1);
+                    display.setText(currentInput);
+                }
             }
         });
 
@@ -216,30 +230,48 @@ public class MainActivity extends AppCompatActivity {
         equalsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double secondNumber = Double.parseDouble(currentInput);
-                double result;
+                if (!currentInput.isEmpty() && isNumeric(currentInput)) {
+                    double secondNumber = Double.parseDouble(currentInput);
+                    double result;
 
-                switch (operation) {
-                    case "+":
-                        result = calculator.add(firstNumber, secondNumber);
-                        break;
-                    case "-":
-                        result = calculator.subtract(firstNumber, secondNumber);
-                        break;
-                    case "*":
-                        result = calculator.multiply(firstNumber, secondNumber);
-                        break;
-                    case "/":
-                        result = calculator.divide(firstNumber, secondNumber);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected operation: " + operation);
+                    switch (operation) {
+                        case "+":
+                            result = calculator.add(firstNumber, secondNumber);
+                            break;
+                        case "-":
+                            result = calculator.subtract(firstNumber, secondNumber);
+                            break;
+                        case "*":
+                            result = calculator.multiply(firstNumber, secondNumber);
+                            break;
+                        case "/":
+                            if (secondNumber == 0) {
+                                display.setText("Error");
+                                return;
+                            }
+                            result = calculator.divide(firstNumber, secondNumber);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected operation: " + operation);
+                    }
+
+                    if (result % 1 == 0) {
+                        display.setText(String.format("%d", (int) result));
+                    } else {
+                        display.setText(String.valueOf(result));
+                    }
+
+                    currentInput = "";
                 }
-
-                display.setText(String.valueOf(result));
-                currentInput = "";
             }
         });
-
+    }
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
