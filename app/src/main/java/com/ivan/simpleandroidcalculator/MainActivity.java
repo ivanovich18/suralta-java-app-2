@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!currentInput.isEmpty() && isNumeric(currentInput)) {
                     double num = Double.parseDouble(currentInput);
                     double result = calculator.percent(num);
-                    display.setText(String.valueOf(result));
-                    currentInput = "";
+                    currentInput = String.valueOf(result);
+                    display.setText(currentInput);
                 }
             }
         });
@@ -110,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!currentInput.isEmpty() && isNumeric(currentInput)) {
                     double num = Double.parseDouble(currentInput);
-                    double result = calculator.changeSign(num);
-                    display.setText(String.valueOf(result));
-                    currentInput = "";
+                    num = num * -1; // Change the sign of the number
+                    currentInput = String.valueOf(num);
+                    display.setText(currentInput);
                 }
             }
         });
@@ -252,7 +252,8 @@ public class MainActivity extends AppCompatActivity {
                             result = calculator.divide(firstNumber, secondNumber);
                             break;
                         default:
-                            throw new IllegalStateException("Unexpected operation: " + operation);
+                            display.setText("Error");
+                            return;
                     }
 
                     if (result % 1 == 0) {
@@ -261,7 +262,9 @@ public class MainActivity extends AppCompatActivity {
                         display.setText(String.valueOf(result));
                     }
 
-                    currentInput = "";
+                    firstNumber = result; // Store the result for the next operation
+                    operation = ""; // Clear the operation
+                    currentInput = String.valueOf(result); // Set currentInput to the result
                 }
             }
         });
